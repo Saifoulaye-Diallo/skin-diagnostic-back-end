@@ -90,14 +90,14 @@ WSGI_APPLICATION = 'skin_diagnostic.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-
-
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')  
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True
     )
 }
-
+print(os.getenv("DATABASE_URL"))
 
 
 
