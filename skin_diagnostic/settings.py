@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
 ]
 # Ajout dynamique du host Railway si présent
 railway_host = os.environ.get("RAILWAY_HOST")
+print("HOSSSTTTTT ===================================================: ",railway_host)
 if railway_host and railway_host not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(railway_host)
 # Application definition
