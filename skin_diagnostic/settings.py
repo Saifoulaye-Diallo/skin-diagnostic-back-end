@@ -28,7 +28,7 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
 ALLOWED_HOSTS = [
-'https://skin-diagnostic-back-end-production.up.railway.app',
+ 'skin-diagnostic-back-end-production.up.railway.app',
 ]
 # Ajout dynamique du host Railway si présent
 railway_host = os.environ.get("RAILWAY_HOST")
