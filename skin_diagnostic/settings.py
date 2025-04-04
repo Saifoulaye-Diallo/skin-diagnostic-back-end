@@ -32,7 +32,9 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 #]
 
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
-print("RAILWAY_HOST:", os.environ.get("RAILWAY_HOST", "⚠️ Not Found"))
+print("✅ ALLOWED_HOSTS:", ALLOWED_HOSTS)
+
+
 
 # Tu peux ajouter RAILWAY_HOST si tu veux être plus souple :
 railway_host = os.environ.get("RAILWAY_HOST")
