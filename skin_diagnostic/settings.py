@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "fallback-secret-key")
 DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
-ALLOWED_HOST [
+ALLOWED_HOSTS = [
 'https://skin-diagnostic-back-end-production.up.railway.app',
 ]
 # Ajout dynamique du host Railway si présent
