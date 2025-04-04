@@ -97,7 +97,6 @@ DATABASES = {
         ssl_require=True
     )
 }
-print(os.getenv("DATABASE_URL"))
 
 
 
