@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import dj_database_url
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -90,16 +90,16 @@ WSGI_APPLICATION = 'skin_diagnostic.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_HOST"),
-        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')  
+    )
 }
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
