@@ -26,7 +26,9 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "fallback-key-if-env-not-set")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() in ("true", "1")
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost').split(',')
+ALLOWED_HOSTS =[
+    os.environ.get('RAILWAY_HOST'), 
+]
 
 
 
