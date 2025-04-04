@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "fallback-key-if-env-not-set")
 DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() in ("true", "1")
 
 ALLOWED_HOSTS =[
-    os.environ.get('RAILWAY_HOST'), 
+    'skin-diagnostic-back-end-production.up.railway.app',
 ]
 
 
