@@ -30,7 +30,8 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 #ALLOWED_HOSTS = [
  #'skin-diagnostic-back-end-production.up.railway.app',
 #]
-ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "") if h.strip()]
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
+
 print("🎯 ALLOWED_HOSTS =>", ALLOWED_HOSTS)
 
 # Ajout dynamique du host Railway si présent
