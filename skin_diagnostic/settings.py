@@ -32,15 +32,6 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 #]
 
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
-print("✅ ALLOWED_HOSTS:", ALLOWED_HOSTS)
-
-print("✅ URL:", os.environ.get("URL"))
-
-
-# Tu peux ajouter RAILWAY_HOST si tu veux être plus souple :
-railway_host = os.environ.get("RAILWAY_HOST")
-if railway_host and railway_host not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append(railway_host)
 
 # Application definition
 
