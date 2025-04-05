@@ -31,7 +31,8 @@ ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").s
 CORS_ALLOWED_ORIGINS = [
     "https://skin-diagnostic-front-end-production-8ed3.up.railway.app",  # Frontend Railway
     "http://localhost:5173",  # React en mode dev
-    "http://localhost:3000",  # Autre config éventuelle
+    "http://localhost:3000", 
+    "http://localhost:4173/"# Autre config éventuelle
 ]
 
 print("TEST : ", CORS_ALLOWED_ORIGINS)
