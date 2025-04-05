@@ -29,7 +29,7 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4173",
+    "https://skin-diagnostic-front-end-production-8ed3.up.railway.app"
 ]
 print("TEST : ", CORS_ALLOWED_ORIGINS)
 # Application definition
