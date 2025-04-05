@@ -29,8 +29,11 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://skin-diagnostic-front-end-production-8ed3.up.railway.app"
+    "https://skin-diagnostic-front-end-production-8ed3.up.railway.app",  # Frontend Railway
+    "http://localhost:5173",  # React en mode dev
+    "http://localhost:3000",  # Autre config éventuelle
 ]
+
 print("TEST : ", CORS_ALLOWED_ORIGINS)
 # Application definition
 CORS_ALLOW_CREDENTIALS = True
@@ -75,7 +78,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
-MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
 ROOT_URLCONF = 'skin_diagnostic.urls'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React en mode dev
