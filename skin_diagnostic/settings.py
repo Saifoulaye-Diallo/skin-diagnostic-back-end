@@ -28,13 +28,9 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://skin-diagnostic-front-end-production-8ed3.up.railway.app",  # ✅ Frontend Railway (production)
-    "http://localhost:5173",  # ✅ Développement local avec Vite
-    "http://localhost:3000",  # ✅ Optionnel (si tu utilises create-react-app)
-    "http://localhost:4173",  # ✅ Optionnel (autres serveurs Vite)
-]
-
+CORS_ALLOWED_ORIGINS = [h.strip() for h in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",") if h.strip()]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True 
 print("TEST : ", CORS_ALLOWED_ORIGINS)
 # Application definition
 CORS_ALLOW_CREDENTIALS = True
