@@ -32,7 +32,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://skin-diagnostic-front-end-production-8ed3.up.railway.app",  # Frontend Railway
     "http://localhost:5173",  # React en mode dev
     "http://localhost:3000", 
-    "http://localhost:4173/"# Autre config éventuelle
+    "http://localhost:4173",# Autre config éventuell
 ]
 
 print("TEST : ", CORS_ALLOWED_ORIGINS)
