@@ -28,12 +28,7 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://skin-diagnostic-front-end-production-8ed3.up.railway.app",  # Frontend Railway
-    "http://localhost:5173",  # React en mode dev
-    "http://localhost:3000", 
-    "http://localhost:4173",# Autre config éventuell
-]
+CORS_ALLOWED_ORIGINS =  [h.strip() for h in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",") if h.strip()]
 
 print("TEST : ", CORS_ALLOWED_ORIGINS)
 # Application definition
