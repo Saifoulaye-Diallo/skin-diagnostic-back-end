@@ -81,10 +81,6 @@ MIDDLEWARE = [
     
 ]
 ROOT_URLCONF = 'skin_diagnostic.urls'
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # React en mode dev
-    "http://localhost:3000",  # React en prod via NGINX
-]
 
 TEMPLATES = [
     {
