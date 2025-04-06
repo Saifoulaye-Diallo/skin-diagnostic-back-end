@@ -1,21 +1,14 @@
+
+from rest_framework import serializers
+from .models import ImageDiagnostic
 class ImageDiagnosticSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
-    created_at = serializers.DateTimeField(source='date_diagnostic', read_only=True)  # 👈 Ajouté ici
 
     class Meta:
         model = ImageDiagnostic
-        fields = [
-            'id',
-            'nom',
-            'prenom',
-            'date_naissance',
-            'diagnostic_result',
-            'created_at',       
-            'image',
-            'image_url'
-        ]
+        fields = ['id', 'nom', 'prenom', 'date_naissance', 'diagnostic_result', 'date_diagnostic', 'image', 'image_url']
         extra_kwargs = {
-            'image': {'max_length': 255}
+            'image': {'max_length': 255}  
         }
 
     def get_image_url(self, obj):
