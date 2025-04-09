@@ -20,7 +20,11 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+MODELS_DIR = BASE_DIR / 'diagnostics' / 'models'
+MODEL_BM_URL = os.getenv('MODEL_BM_URL')
+MODEL_BDNV_URL = os.getenv('MODEL_BDNV_URL')
+MODEL_ABM_URL = os.getenv('MODEL_ABM_URL')
+MODEL_PCA_URL = os.getenv('MODEL_PCA_URL')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -128,8 +132,6 @@ WSGI_APPLICATION = 'skin_diagnostic.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-print(os.getenv("DATABASE_URL"))
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

@@ -10,6 +10,8 @@ from datetime import datetime
 import os
 from django.core.files.uploadedfile import SimpleUploadedFile 
 from django.utils.text import slugify 
+from .utils import *
+
 
 class DiagnosticView(APIView):
     permission_classes = [IsAuthenticated]
@@ -19,11 +21,11 @@ class DiagnosticView(APIView):
         data = request.data.copy()
         data['nom'] = data.get('lastName', '')
         data['prenom'] = data.get('firstName', '')
-        
-        # Validation de la date
+
+        # Validation de la date de naissance
         try:
             birth_date_str = data.get('birthDate')
-            if birth_date_str:  # Vérification supplémentaire
+            if birth_date_str:
                 data['date_naissance'] = datetime.strptime(birth_date_str, "%Y-%m-%d").date()
         except (ValueError, TypeError) as e:
             print(f"Erreur de date: {str(e)}")
@@ -31,25 +33,33 @@ class DiagnosticView(APIView):
                 {"error": "Format de date invalide. Format attendu : AAAA-MM-JJ"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
-        # Génération du résultat de diagnostic (simplifié pour l'exemple)
-        diagnostic_result = "Lesion_benigne"  # Version sans accents ni espaces
-        data['diagnostic_result'] = diagnostic_result
-        
-        # Traitement du fichier image
+
+        diagnostic_result = "inconnu"
+
+        # Prédiction à partir de l'image
+        try:
+            if 'image' in request.FILES:
+                uploaded_file = request.FILES['image']
+                diagnostic_result = predict_diagnostic_from_file(uploaded_file)
+                data['diagnostic_result'] = diagnostic_result
+        except Exception as e:
+            print(f"Erreur prédiction: {str(e)}")
+            return Response(
+                {"error": "Erreur pendant la prédiction du diagnostic."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        # Traitement du fichier image pour renommage
         if 'image' in request.FILES:
             uploaded_file = request.FILES['image']
             now = datetime.now()
-            
-            # Formatage du nom de fichier
-            timestamp = now.strftime("%Y%m%d_%H%M%S%f")[:-3]  # Format: 20250405_143022456
-            file_ext = os.path.splitext(uploaded_file.name)[1].lower()  # Extension en minuscules
-            
-            # Création d'un nom de fichier sécurisé
+            timestamp = now.strftime("%Y%m%d_%H%M%S%f")[:-3]
+            file_ext = os.path.splitext(uploaded_file.name)[1].lower()
+
             original_name = os.path.splitext(uploaded_file.name)[0]
-            safe_name = slugify(f"{original_name[:20]}_{timestamp}")  # Tronqué à 20 caractères
+            safe_name = slugify(f"{original_name[:20]}_{timestamp}")
             new_filename = f"{diagnostic_result}_{safe_name}{file_ext}"
-            
+
             try:
                 data['image'] = SimpleUploadedFile(
                     name=new_filename,
@@ -62,36 +72,29 @@ class DiagnosticView(APIView):
                     {"error": "Erreur de traitement du fichier image"}, 
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        
+
         # Validation et sauvegarde
         serializer = ImageDiagnosticSerializer(data=data, context={'request': request})
-        
+
         if serializer.is_valid():
             try:
                 diagnostic = serializer.save(user=request.user)
-                print(f"✅ Fichier uploadé: {new_filename}")
-                print(f"🔗 URL Cloudinary: {diagnostic.image.url}")
-                
-                # Retourne une réponse enrichie
                 response_data = serializer.data
                 response_data['storage'] = str(type(diagnostic.image.storage))
                 response_data['filename'] = new_filename
-                
                 return Response(response_data, status=status.HTTP_201_CREATED)
-            
             except Exception as e:
                 print(f"Erreur de sauvegarde: {str(e)}")
                 return Response(
                     {"error": "Erreur lors de l'enregistrement"}, 
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
-        
+
         print(f"❌ Erreurs de validation: {serializer.errors}")
         return Response(
             {"errors": serializer.errors}, 
             status=status.HTTP_400_BAD_REQUEST
         )
-
 
 class ImageDiagnosticListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
