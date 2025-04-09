@@ -120,4 +120,4 @@ def test_prediction_on_startup():
     print(f"🧠 Prédiction automatique au démarrage : {result}")
 
 # === 11. Lancement ===
-test_prediction_on_startup()
+#test_prediction_on_startup()
