@@ -18,6 +18,11 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
+# ⬇️ Construction de la base de données
+RUN python manage.py makemigrations
+RUN python manage.py migrate
+
+# ⬇️ Collecte des fichiers statiques
 RUN python manage.py collectstatic --noinput
 
 CMD ["gunicorn", "skin_diagnostic.wsgi:application", "--bind", "0.0.0.0:8000", "--workers=3"]
