@@ -1,27 +1,21 @@
-from rest_framework import generics, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
-from .serializers import RegisterSerializer
+from .serializers import UserProfileSerializer
+from rest_framework import status
 
-# Vue pour l’inscription
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
-    permission_classes = [AllowAny]
-
-# Vue pour récupérer le profil de l'utilisateur connecté
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        serializer = UserProfileSerializer(user)
+        serializer = UserProfileSerializer(request.user)
         return Response(serializer.data)
-        
-  def patch(self, request): 
-        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
+
+    def patch(self, request):  
+        serializer = UserProfileSerializer(
+            request.user, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
