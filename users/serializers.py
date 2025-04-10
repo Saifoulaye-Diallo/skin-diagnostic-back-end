@@ -1,7 +1,7 @@
-# serializers.py
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+# 🔹 Pour l’inscription
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -11,14 +11,14 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
+# 🔹 Pour lecture/modification du profil
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
         extra_kwargs = {
-            'username': {'read_only': True},  
+            'username': {'read_only': True},
             'email': {'required': False},
             'first_name': {'required': False},
             'last_name': {'required': False},
         }
-
