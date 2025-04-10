@@ -18,8 +18,6 @@ class DiagnosticView(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, format=None):
-        print("📦 Données reçues :", request.data)
-        print("🖼️ Fichiers reçus :", request.FILES)
         data = request.data.copy()
         data['nom'] = data.get('lastName', '')
         data['prenom'] = data.get('firstName', '')
@@ -30,7 +28,6 @@ class DiagnosticView(APIView):
             if birth_date_str:
                 data['date_naissance'] = datetime.strptime(birth_date_str, "%Y-%m-%d").date()
         except (ValueError, TypeError) as e:
-            print(f"Erreur de date: {str(e)}")
             return Response(
                 {"error": "Format de date invalide. Format attendu : AAAA-MM-JJ"}, 
                 status=status.HTTP_400_BAD_REQUEST
@@ -47,7 +44,6 @@ class DiagnosticView(APIView):
                 uploaded_file.seek(0)
                 diagnostic_result = predict_diagnostic_from_file(uploaded_file)
                 data['diagnostic_result'] = diagnostic_result
-                print("🧠 Diagnostic prédit :", diagnostic_result)
 
                 # Renommage du fichier proprement
                 uploaded_file.seek(0)
@@ -84,6 +80,45 @@ class DiagnosticView(APIView):
             {"errors": serializer.errors}, 
             status=status.HTTP_400_BAD_REQUEST
         )
+
+class UpdateDiagnosticView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, id):
+        try:
+            diagnostic = ImageDiagnostic.objects.get(id=id, user=request.user)
+        except ImageDiagnostic.DoesNotExist:
+            return Response({'error': 'Diagnostic introuvable'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = request.data.copy()
+        data['nom'] = data.get('lastName', '')
+        data['prenom'] = data.get('firstName', '')
+
+        if 'birthDate' in data:
+            try:
+                data['date_naissance'] = datetime.strptime(data['birthDate'], "%Y-%m-%d").date()
+            except Exception as e:
+                return Response(
+                    {"error": "Format de date invalide (attendu AAAA-MM-JJ)"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        serializer = ImageDiagnosticSerializer(diagnostic, data=data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteDiagnosticView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, id):
+        try:
+            diagnostic = ImageDiagnostic.objects.get(id=id, user=request.user)
+            diagnostic.delete()
+            return Response({'message': 'Diagnostic supprimé avec succès'}, status=status.HTTP_204_NO_CONTENT)
+        except ImageDiagnostic.DoesNotExist:
+            return Response({'error': 'Diagnostic introuvable'}, status=status.HTTP_404_NOT_FOUND)
 
 class ImageDiagnosticListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
