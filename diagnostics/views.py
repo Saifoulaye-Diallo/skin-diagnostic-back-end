@@ -6,7 +6,7 @@ from rest_framework import generics, status
 from .models import ImageDiagnostic
 from .serializers import ImageDiagnosticSerializer
 from datetime import datetime
-from datetime import datetime
+
 import os
 from django.core.files.uploadedfile import SimpleUploadedFile 
 from django.utils.text import slugify 
@@ -18,6 +18,8 @@ class DiagnosticView(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, format=None):
+        print("📦 Données reçues :", request.data)
+        print("🖼️ Fichiers reçus :", request.FILES)
         data = request.data.copy()
         data['nom'] = data.get('lastName', '')
         data['prenom'] = data.get('firstName', '')
@@ -37,41 +39,28 @@ class DiagnosticView(APIView):
         diagnostic_result = "inconnu"
 
         # Prédiction à partir de l'image
-        try:
-            if 'image' in request.FILES:
+        if 'image' in request.FILES:
+            try:
                 uploaded_file = request.FILES['image']
+
+                # Lecture du fichier pour la prédiction
+                uploaded_file.seek(0)
                 diagnostic_result = predict_diagnostic_from_file(uploaded_file)
                 data['diagnostic_result'] = diagnostic_result
-        except Exception as e:
-            print(f"Erreur prédiction: {str(e)}")
-            return Response(
-                {"error": "Erreur pendant la prédiction du diagnostic."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+                print("🧠 Diagnostic prédit :", diagnostic_result)
 
-        # Traitement du fichier image pour renommage
-        if 'image' in request.FILES:
-            uploaded_file = request.FILES['image']
-            now = datetime.now()
-            timestamp = now.strftime("%Y%m%d_%H%M%S%f")[:-3]
-            file_ext = os.path.splitext(uploaded_file.name)[1].lower()
+                # Renommage du fichier proprement
+                uploaded_file.seek(0)
+                data['image'], new_filename = handle_uploaded_image(uploaded_file, diagnostic_result)
 
-            original_name = os.path.splitext(uploaded_file.name)[0]
-            safe_name = slugify(f"{original_name[:20]}_{timestamp}")
-            new_filename = f"{diagnostic_result}_{safe_name}{file_ext}"
-
-            try:
-                data['image'] = SimpleUploadedFile(
-                    name=new_filename,
-                    content=uploaded_file.read(),
-                    content_type=uploaded_file.content_type
-                )
             except Exception as e:
-                print(f"Erreur de lecture du fichier: {str(e)}")
+                print(f"❌ Erreur pendant traitement ou prédiction : {str(e)}")
                 return Response(
-                    {"error": "Erreur de traitement du fichier image"}, 
+                    {"error": "Erreur de traitement ou de prédiction de l'image."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+        else:
+            return Response({"error": "Aucune image envoyée."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validation et sauvegarde
         serializer = ImageDiagnosticSerializer(data=data, context={'request': request})

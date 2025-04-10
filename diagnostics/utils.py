@@ -9,6 +9,10 @@ from django.conf import settings
 from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input as preprocess_input_resnet50
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import Model
+from datetime import datetime
+from datetime import datetime
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils.text import slugify
 
 # === 1. Constantes ===
 DATASET_NAME = "HAM10000_Dataset_bdnvabm_split_80_2_128_128"
@@ -119,5 +123,21 @@ def test_prediction_on_startup():
     result = predict_diagnostic_from_file(test_image_path)
     print(f"🧠 Prédiction automatique au démarrage : {result}")
 
-# === 11. Lancement ===
-#test_prediction_on_startup()
+
+
+def handle_uploaded_image(uploaded_file, diagnostic_result):
+    now = datetime.now()
+    timestamp = now.strftime("%Y%m%d_%H%M%S%f")[:-3]
+    file_ext = os.path.splitext(uploaded_file.name)[1].lower()
+    original_name = os.path.splitext(uploaded_file.name)[0]
+    safe_name = slugify(f"{original_name[:20]}_{timestamp}")
+    new_filename = f"{diagnostic_result}_{safe_name}{file_ext}"
+
+    uploaded_file.seek(0)  # revenir au début du flux
+
+    return SimpleUploadedFile(
+        name=new_filename,
+        content=uploaded_file.read(),
+        content_type=uploaded_file.content_type
+    ), new_filename
+
