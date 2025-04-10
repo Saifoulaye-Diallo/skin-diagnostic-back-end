@@ -11,12 +11,6 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
-# Serializer pour renvoyer le profil utilisateur connecté
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
-
 # Vue pour récupérer le profil de l'utilisateur connecté
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
