@@ -84,11 +84,11 @@ def predict(pil_image):
 
         if prediction_bm == 0:  # bénin
             prediction_bdnv = MODEL_BDNV.predict(reduced_features)[0]
-            predictions = {0: 'bkl', 1: 'df', 2: 'nv', 3: 'vasc'}
+            predictions = {0: 'Kératose', 1: 'Dermatofibrome', 2: 'Naevus', 3: 'Lésion vasculaire'}
             return predictions.get(prediction_bdnv, 'inconnu')
         else:  # malin
             prediction_abm = MODEL_ABM.predict(reduced_features)[0]
-            predictions = {0: 'akiec', 1: 'bcc', 2: 'mel'}
+            predictions = {0: 'Kératose actinique', 1: 'Carcinome basocellulaire', 2: 'Mélanome'}
             return predictions.get(prediction_abm, 'inconnu')
 
     except Exception as e:
